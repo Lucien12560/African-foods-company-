@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>African Foods Company - IT Employee Portal</title>
+    <style>
+        :root {
+            --primary: #1e293b;
+            --primary-dark: #0f172a;
+            --accent: #f97316;
+            --accent-hover: #ea580c;
+            --bg-main: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #334155;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --success: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Top Header */
+        header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 4px solid var(--accent);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+        }
+
+        header p {
+            color: #94a3b8;
+            font-size: 1.1rem;
+        }
+
+        /* Sticky Navigation Bar */
+        .navbar {
+            background-color: var(--primary);
+            display: flex;
+            justify-content: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .nav-links li a {
+            display: block;
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 14px 20px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-links li a:hover,
+        .nav-links li a.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-bottom-color: var(--accent);
+        }
+
+        /* Main Wrapper */
+        .main-wrapper {
+            flex: 1;
+            max-width: 1000px;
+            width: 92%;
+            margin: 40px auto;
+        }
+
+        /* SPA Views */
+        .page-view {
+            display: none;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .page-view.active-page {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hero Element inside Home */
+        .hero-banner {
+            background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1200&q=80') center/cover;
+            color: white;
+            padding: 50px 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .hero-banner h2 {
+            font-size: 2.2rem;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+
+        .hero-banner p {
+            color: #cbd5e1;
+            font-size: 1.05rem;
+            max-width: 650px;
+            margin: 0 auto 25px auto;
+        }
+
+        /* Search Filter Box */
+        .search-container {
+            margin: 0 auto;
+            max-width: 480px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 14px 20px;
+            font-size: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 50px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-box:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.15);
+        }
+
+        /* Grid Layout */
+        .sop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .sop-card {
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .sop-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 20px -10px rgba(0,0,0,0.1);
+        }
+
+        .sop-card h3 {
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .sop-card p {
+            color: var(--text-muted);
+            font-size: 0.92rem;
+            margin-bottom: 20px;
+        }
+
+        .sop-meta {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            border-top: 1px solid var(--border);
+            padding-top: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .badge {
+            background-color: #ffedd5;
+            color: #c2410c;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        .sop-card.hidden {
+            display: none !important;
+        }
+
+        /* Subpages Elements */
+        .breadcrumbs-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .breadcrumbs {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .breadcrumbs a {
+            color: var(--accent);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .back-btn {
+            background-color: #f1f5f9;
+            color: var(--primary);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .back-btn:hover {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-header h2 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+        }
+
+        /* Generic Content Styling */
+        h3 {
+            color: var(--primary);
+            margin: 25px 0 12px 0;
+            font-size: 1.25rem;
+        }
+
+        p, ul, ol {
+            margin-bottom: 15px;
+            color: var(--text-main);
+        }
+
+        ul, ol {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .info-box {
+            background-color: #f8fafc;
+            border-left: 4px solid var(--accent);
+            padding: 16px;
+            margin: 20px 0;
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            border: 1px solid var(--border);
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 0.92rem;
+        }
+
+        th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        code {
+            background-color: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #e11d48;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--primary-dark);
+            color: #94a3b8;
+            padding: 40px 20px 20px 20px;
+            margin-top: auto;
+            font-size: 0.9rem;
+        }
+
+        .footer-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .footer-section h4 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 1rem;
+            border-left: 3px solid var(--accent);
+            padding-left: 8px;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 8px;
+        }
+
+        .footer-section ul li a {
+            color: #94a3b8;
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .footer-section ul li a:hover {
+            color: var(--accent);
+        }
+
+        .footer-bottom {
+            max-width: 1000px;
+            margin: 20px auto 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: var(--success);
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>African Foods Company (Ltd)</h1>
+        <p>IT Department Enterprise Employee Portal</p>
+    </header>
+
+    <!-- Global Navigation -->
+    <nav class="navbar">
+        <ul class="nav-links">
+            <li><a id="nav-home" class="active" onclick="navigateTo('home')">Home Portal</a></li>
+            <li><a id="nav-staff" onclick="navigateTo('staff')">Staff Structure</a></li>
+            <li><a id="nav-security" onclick="navigateTo('security')">Security Policy</a></li>
+            <li><a id="nav-aup" onclick="navigateTo('aup')">Acceptable Use</a></li>
+            <li><a id="nav-acquisition" onclick="navigateTo('acquisition')">Acquisition</a></li>
+            <li><a id="nav-helpdesk" onclick="navigateTo('helpdesk')">Service Desk & SLAs</a></li>
+        </ul>
+    </nav>
+
+    <div class="main-wrapper">
+
+        <!-- HOME PAGE VIEW -->
+        <div id="page-home" class="page-view active-page">
+            <div class="hero-banner">
+                <h2>Technology that keeps AFC connected.</h2>
+                <p>Welcome to the African Foods Company IT Information Hub. Access standardized operating procedures, security directives, and system guides.</p>
+                <div class="search-container">
+                    <input type="text" id="searchInput" class="search-box" placeholder="Search operational guides..." onkeyup="filterPolicies()">
+                </div>
+            </div>
+
+            <div class="sop-grid">
+                <div class="sop-card" onclick="navigateTo('staff')" data-keywords="it staff structure reporting lines roles team hierarchy">
+                    <div>
+                        <h3>IT Staff Structure</h3>
+                        <p>Explore departmental hierarchies, reporting lines, and core infrastructure contact roles.</p>
+                    </div>
+                    <div class="sop-meta">
+                        <span>Updated: 2026</span>
+                        <span class="badge">Active</span>
+                    </div>
+                </div>
+
+                <div class="sop-card" onclick="navigateTo('security')" data-keywords="it security policy password network guidelines encryption vpn">
+                    <div>
+                        <h3>IT Security Policy</h3>
+                        <p>Mandatory standards for multi-factor authentication, robust passkeys, and phishing safety.</p>
+                    </div>
+                    <div class="sop-meta">
+                        <span>Updated: 2026</span>
+                        <span class="badge">Active</span>
+                    </div>
+                </div>
+
+                <div class="sop-card" onclick="navigateTo('aup')" data-keywords="acceptable use policy rules company hardware software browsing">
+                    <div>
+                        <h3>Acceptable Use Policy</h3>
+                        <p>Regulatory boundaries for company laptops, mobile devices, network traffic, and software.</p>
+                    </div>
+                    <div class="sop-meta">
+                        <span>Updated: Q4 2025</span>
+                        <span class="badge">Active</span>
+                    </div>
+                </div>
+
+                <div class="sop-card" onclick="navigateTo('acquisition')" data-keywords="acquisition procedures requesting hardware software procurement">
+                    <div>
+                        <h3>Acquisition Procedures</h3>
+                        <p>Step-by-step workflow for requisitioning new IT assets, peripherals, and software licenses.</p>
+                    </div>
+                    <div class="sop-meta">
+                        <span>Updated: 2026</span>
+                        <span class="badge">Active</span>
+                    </div>
+                </div>
+
+                <div class="sop-card" onclick="navigateTo('helpdesk')" data-keywords="service desk procedures logging tickets slas support priority">
+                    <div>
+                        <h3>Service Desk Procedures</h3>
+                        <p>Incident logging guidelines, response SLAs, support desk contacts, and priority matrices.</p>
+                    </div>
+                    <div class="sop-meta">
+                        <span>Updated: 2026</span>
+                        <span class="badge">Active</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STAFF STRUCTURE PAGE -->
+        <div id="page-staff" class="page-view">
+            <div class="breadcrumbs-bar">
+                <div class="breadcrumbs"><a onclick="navigateTo('home')">Home</a> &gt; <span>IT Staff Structure</span></div>
+                <button class="back-btn" onclick="navigateTo('home')">&larr; Back to Home</button>
+            </div>
+            <div class="page-header">
+                <h2>IT Staff Structure & Organizational Roles</h2>
+                <p>Overview of technical leadership, administrative layers, and operational oversight.</p>
+            </div>
+            <div class="info-box">
+                <strong>Executive Escalation:</strong> For systemic infrastructure failures, contact executive support channels or email security directly.
+            </div>
+            <h3>Core Leadership Group</h3>
+            <ul>
+                <li><strong>Chief Information Officer (CIO):</strong> Drives overall tech roadmap, digital expansion, and budget allocation.</li>
+                <li><strong>Infrastructure & Security Manager:</strong> Governs cloud setups, server reliability, firewalls, and data backups.</li>
+                <li><strong>Systems Specialist:</strong> Supervises enterprise tools, integrations, and database performance.</li>
+                <li><strong>Service Desk Lead:</strong> Directs end-user support operations and ticket workflows.</li>
+            </ul>
+        </div>
+
+        <!-- SECURITY POLICY PAGE -->
+        <div id="page-security" class="page-view">
+            <div class="breadcrumbs-bar">
+                <div class="breadcrumbs"><a onclick="navigateTo('home')">Home</a> &gt; <span>IT Security Policy</span></div>
+                <button class="back-btn" onclick="navigateTo('home')">&larr; Back to Home</button>
+            </div>
+            <div class="page-header">
+                <h2>IT Security Policy Guidelines</h2>
+                <p>Essential safeguards protecting corporate assets and employee environments.</p>
+            </div>
+            <h3>Password & Access Standard</h3>
+            <ul>
+                <li>Minimum of 12 characters combining uppercase, lowercase, numbers, and symbols.</li>
+                <li>Mandatory rotation every 90 days. Never write or share credentials.</li>
+                <li>Multi-factor authentication (MFA) is strictly required across all corporate cloud applications.</li>
+            </ul>
+            <h3>Workstation Safety</h3>
+            <p>Always lock machines when stepping away (Press <code>Win + L</code> or <code>Ctrl + Cmd + Q</code>).</p>
+        </div>
+
+        <!-- ACCEPTABLE USE POLICY PAGE -->
+        <div id="page-aup" class="page-view">
+            <div class="breadcrumbs-bar">
+                <div class="breadcrumbs"><a onclick="navigateTo('home')">Home</a> &gt; <span>Acceptable Use Policy</span></div>
+                <button class="back-btn" onclick="navigateTo('home')">&larr; Back to Home</button>
+            </div>
+            <div class="page-header">
+                <h2>Acceptable Use Policy (AUP)</h2>
+                <p>Framework governing the use of African Foods Company hardware and software.</p>
+            </div>
+            <h3>Equipment Management</h3>
+            <p>Company-issued assets are intended primarily for professional tasks. Minor, incidental personal browsing is permitted during designated breaks provided it remains safe and compliant.</p>
+            <h3>Prohibited Actions</h3>
+            <ul>
+                <li>Deploying unvetted or cracked external software utilities without IT validation.</li>
+                <li>Connecting unauthorized personal storage media or USB drives into workstations.</li>
+                <li>Exposing company directories to consumer cloud hosting services.</li>
+            </ul>
+        </div>
+
+        <!-- ACQUISITION PROCEDURES PAGE -->
+        <div id="page-acquisition" class="page-view">
+            <div class="breadcrumbs-bar">
+                <div class="breadcrumbs"><a onclick="navigateTo('home')">Home</a> &gt; <span>Acquisition Procedures</span></div>
+                <button class="back-btn" onclick="navigateTo('home')">&larr; Back to Home</button>
+            </div>
+            <div class="page-header">
+                <h2>Procurement & Requisition Workflow</h2>
+                <p>Standard guidelines for acquiring fresh IT hardware or software licenses.</p>
+            </div>
+            <ol>
+                <li><strong>Submit Ticket:</strong> Log request details through the internal IT ticketing framework.</li>
+                <li><strong>Budget Sign-off:</strong> Department supervisor confirms allocation feasibility.</li>
+                <li><strong>IT Evaluation:</strong> Review for compatibility and standards compliance.</li>
+                <li><strong>Fulfillment:</strong> Procurement, asset tagging, and device deployment.</li>
+            </ol>
+        </div>
+
+        <!-- SERVICE DESK PROCEDURES PAGE -->
+        <div id="page-helpdesk" class="page-view">
+            <div class="breadcrumbs-bar">
+                <div class="breadcrumbs"><a onclick="navigateTo('home')">Home</a> &gt; <span>Service Desk</span></div>
+                <button class="back-btn" onclick="navigateTo('home')">&larr; Back to Home</button>
+            </div>
+            <div class="page-header">
+                <h2>Service Desk & Target SLAs</h2>
+                <p>Direct lines of contact and expected response timeframes.</p>
+            </div>
+            <div class="info-box">
+                📧 <strong>Support Email:</strong> itsupport@africanfoods.com<br>
+                📞 <strong>Direct Line:</strong> Ext. 4400 / Line 2 (07:30 – 17:00 SAST)
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Priority Level</th>
+                        <th>Impact Description</th>
+                        <th>First Response</th>
+                        <th>Target Resolution</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>P1 - Critical</strong></td>
+                        <td>Total facility or company-wide core outage</td>
+                        <td>15 Minutes</td>
+                        <td>2 Hours</td>
+                    </tr>
+                    <tr>
+                        <td><strong>P2 - High</strong></td>
+                        <td>Key department software or operational tools down</td>
+                        <td>1 Hour</td>
+                        <td>4 Hours</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>African Foods Company</h4>
+                <p>IT Employee Portal providing streamlined, secure access to operational documentation.</p>
+                <p><span class="status-dot"></span>All Systems Operational</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a onclick="navigateTo('staff')">IT Staff Structure</a></li>
+                    <li><a onclick="navigateTo('security')">IT Security Policy</a></li>
+                    <li><a onclick="navigateTo('aup')">Acceptable Use Policy</a></li>
+                    <li><a onclick="navigateTo('acquisition')">Acquisition Procedures</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Support Contact</h4>
+                <p><strong>Email:</strong> itsupport@africanfoods.com</p>
+                <p><strong>Phone:</strong> Ext. 4400</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div>&copy; 2026 African Foods Company (Ltd). Internal Use Only.</div>
+            <div>Portal v3.2</div>
+        </div>
+    </footer>
+
+    <script>
+        function navigateTo(pageId) {
+            const pages = document.querySelectorAll('.page-view');
+            pages.forEach(page => page.classList.remove('active-page'));
+
+            const targetPage = document.getElementById('page-' + pageId);
+            if (targetPage) {
+                targetPage.classList.add('active-page');
+            }
+
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks.forEach(link => link.classList.remove('active'));
+            
+            const activeNav = document.getElementById('nav-' + pageId);
+            if (activeNav) {
+                activeNav.classList.add('active');
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function filterPolicies() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.getElementsByClassName('sop-card');
+
+            for (let i = 0; i < cards.length; i++) {
+                const card = cards[i];
+                const textContent = card.innerText.toLowerCase();
+                const keywords = card.getAttribute('data-keywords').toLowerCase();
+
+                if (textContent.includes(input) || keywords.includes(input)) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>
